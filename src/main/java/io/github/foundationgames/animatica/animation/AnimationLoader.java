@@ -50,7 +50,7 @@ public final class AnimationLoader implements ResourceManagerReloadListener {
 
     public void tickTextures() {
         if (!RenderSystem.isOnRenderThread()) {
-            RenderSystem.recordRenderCall(this::tickTextures);
+            Minecraft.getInstance().execute(this::tickTextures);
         } else {
             for (var texture : animatedTextures) {
                 texture.tick();

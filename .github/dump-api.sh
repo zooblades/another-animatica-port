@@ -1,9 +1,14 @@
 #!/bin/bash
 # Prints member signatures of Minecraft classes used by the mod as workflow annotations,
 # so the exact 1.21.11 API (Mojang names) can be checked without a local game install.
-JAR=$(find / -name '*.jar' \( -path '*loom-cache*' -o -path '*fabric-loom*' \) 2>/dev/null | grep -iE 'minecraft' | grep -viE 'sources|loader|fabric-api' | xargs -r ls -S 2>/dev/null | head -1)
+JAR=""
+CANDS=$(find / -name '*.jar' -size +8M 2>/dev/null | grep -viE 'sources|/jdk|/java-|gradle-[0-9]|/wrapper/dists|/hostedtoolcache/' )
+for j in $CANDS; do
+  if javap -cp "$j" net.minecraft.client.renderer.texture.TextureManager >/dev/null 2>&1; then JAR="$j"; break; fi
+done
+echo "candidates: $(echo "$CANDS" | head -20 | tr '\n' ' ')"
 echo "jar: $JAR"
-[ -z "$JAR" ] && { echo "::warning title=api dump::no minecraft jar found"; exit 0; }
+[ -z "$JAR" ] && { echo "::warning title=api dump::no minecraft jar found among: $(echo $CANDS | head -c 1500)"; exit 0; }
 emit() { # title, text
   python3 - "$1" <<'PY'
 import sys
