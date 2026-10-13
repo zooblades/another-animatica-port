@@ -4,11 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.foundationgames.animatica.Animatica;
 import io.github.foundationgames.animatica.util.Flags;
 import io.github.foundationgames.animatica.util.exception.PropertyParseException;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -21,29 +21,28 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public final class AnimationLoader implements SimpleSynchronousResourceReloadListener {
+public final class AnimationLoader implements ResourceManagerReloadListener {
     public static final String[] ANIM_PATHS = {
             "animatica/anim",
             "mcpatcher/anim",
             "optifine/anim"
     };
-    private static final Identifier ID = Animatica.id("animation_storage");
 
     public static final AnimationLoader INSTANCE = new AnimationLoader();
 
-    private final Map<Identifier, Identifier> animationIds = new HashMap<>();
+    private final Map<ResourceLocation, ResourceLocation> animationIds = new HashMap<>();
     private final Set<AnimatedTexture> animatedTextures = new HashSet<>();
 
     private AnimationLoader() {
     }
 
-    private static void findAllMCPAnimations(ResourceManager manager, BiConsumer<Identifier, Resource> action) {
+    private static void findAllMCPAnimations(ResourceManager manager, BiConsumer<ResourceLocation, Resource> action) {
         for (var path : ANIM_PATHS) {
-            manager.findResources(path, p -> p.getPath().endsWith(".properties")).forEach(action);
+            manager.listResources(path, p -> p.getPath().endsWith(".properties")).forEach(action);
         }
     }
 
-    public @Nullable Identifier getAnimationId(Identifier id) {
+    public @Nullable ResourceLocation getAnimationId(ResourceLocation id) {
         return animationIds.get(id);
     }
 
@@ -58,12 +57,7 @@ public final class AnimationLoader implements SimpleSynchronousResourceReloadLis
     }
 
     @Override
-    public Identifier getFabricId() {
-        return ID;
-    }
-
-    @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         this.animatedTextures.clear();
         this.animationIds.clear();
 
@@ -73,11 +67,11 @@ public final class AnimationLoader implements SimpleSynchronousResourceReloadLis
 
         Flags.ALLOW_INVALID_ID_CHARS = true;
 
-        var animations = new HashMap<Identifier, List<AnimationMeta>>();
+        var animations = new HashMap<ResourceLocation, List<AnimationMeta>>();
 
         findAllMCPAnimations(manager, (id, resource) -> {
             try {
-                try (var resourceInputStream = resource.getInputStream()) {
+                try (var resourceInputStream = resource.open()) {
                     var ppt = new Properties();
                     ppt.load(resourceInputStream);
 
@@ -95,10 +89,10 @@ public final class AnimationLoader implements SimpleSynchronousResourceReloadLis
         for (var targetId : animations.keySet()) {
             AnimatedTexture.tryCreate(manager, targetId, animations.get(targetId))
                     .ifPresent(tex -> {
-                        var animId = new Identifier(targetId.getNamespace(), targetId.getPath() + "-anim");
+                        var animId = ResourceLocation.fromNamespaceAndPath(targetId.getNamespace(), targetId.getPath() + "-anim");
                         this.animationIds.put(targetId, animId);
                         this.animatedTextures.add(tex);
-                        tex.registerTexture(MinecraftClient.getInstance().getTextureManager(), manager, animId, MinecraftClient.getInstance());
+                        Minecraft.getInstance().getTextureManager().register(animId, tex);
                     });
         }
 
