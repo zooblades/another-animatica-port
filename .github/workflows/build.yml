@@ -17,7 +17,25 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
-        run: ./gradlew build
+        run: |
+          set +e
+          ./gradlew build --stacktrace --console=plain > build.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then
+            python3 - <<'PY'
+          import re
+          lines = open('build.log', errors='replace').read().splitlines()
+          out = []
+          for i, l in enumerate(lines):
+              if re.search(r'error:|What went wrong|Execution failed|Could not|Caused by|FAILED', l):
+                  out.extend(lines[i:i+4])
+                  out.append('---')
+          text = '\n'.join(out)[:20000] or '\n'.join(lines[-60:])
+          text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Gradle build failed::' + text)
+          PY
+          fi
+          exit $code
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:
