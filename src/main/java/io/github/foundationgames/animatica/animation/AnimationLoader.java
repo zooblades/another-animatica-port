@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -28,21 +28,23 @@ public final class AnimationLoader implements ResourceManagerReloadListener {
             "optifine/anim"
     };
 
+    public static final Identifier ID = Animatica.id("animation_storage");
+
     public static final AnimationLoader INSTANCE = new AnimationLoader();
 
-    private final Map<ResourceLocation, ResourceLocation> animationIds = new HashMap<>();
+    private final Map<Identifier, Identifier> animationIds = new HashMap<>();
     private final Set<AnimatedTexture> animatedTextures = new HashSet<>();
 
     private AnimationLoader() {
     }
 
-    private static void findAllMCPAnimations(ResourceManager manager, BiConsumer<ResourceLocation, Resource> action) {
+    private static void findAllMCPAnimations(ResourceManager manager, BiConsumer<Identifier, Resource> action) {
         for (var path : ANIM_PATHS) {
             manager.listResources(path, p -> p.getPath().endsWith(".properties")).forEach(action);
         }
     }
 
-    public @Nullable ResourceLocation getAnimationId(ResourceLocation id) {
+    public @Nullable Identifier getAnimationId(Identifier id) {
         return animationIds.get(id);
     }
 
@@ -67,7 +69,7 @@ public final class AnimationLoader implements ResourceManagerReloadListener {
 
         Flags.ALLOW_INVALID_ID_CHARS = true;
 
-        var animations = new HashMap<ResourceLocation, List<AnimationMeta>>();
+        var animations = new HashMap<Identifier, List<AnimationMeta>>();
 
         findAllMCPAnimations(manager, (id, resource) -> {
             try {
@@ -89,7 +91,7 @@ public final class AnimationLoader implements ResourceManagerReloadListener {
         for (var targetId : animations.keySet()) {
             AnimatedTexture.tryCreate(manager, targetId, animations.get(targetId))
                     .ifPresent(tex -> {
-                        var animId = ResourceLocation.fromNamespaceAndPath(targetId.getNamespace(), targetId.getPath() + "-anim");
+                        var animId = Identifier.fromNamespaceAndPath(targetId.getNamespace(), targetId.getPath() + "-anim");
                         this.animationIds.put(targetId, animId);
                         this.animatedTextures.add(tex);
                         Minecraft.getInstance().getTextureManager().register(animId, tex);

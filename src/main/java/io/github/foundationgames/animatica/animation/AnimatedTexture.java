@@ -6,7 +6,7 @@ import io.github.foundationgames.animatica.util.TextureUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class AnimatedTexture extends DynamicTexture {
     private final NativeImage original;
     private int frame = 0;
 
-    public static Optional<AnimatedTexture> tryCreate(ResourceManager resources, ResourceLocation targetTexId, List<AnimationMeta> anims) {
+    public static Optional<AnimatedTexture> tryCreate(ResourceManager resources, Identifier targetTexId, List<AnimationMeta> anims) {
         try (var targetTexResource = resources.getResourceOrThrow(targetTexId).open()) {
             return Optional.of(new AnimatedTexture(resources, anims, NativeImage.read(targetTexResource)));
         } catch (IOException e) { Animatica.LOG.error(e); }
@@ -28,7 +28,7 @@ public class AnimatedTexture extends DynamicTexture {
     }
 
     public AnimatedTexture(ResourceManager resources, List<AnimationMeta> metas, NativeImage image) throws IOException {
-        super(new NativeImage(image.format(), image.getWidth(), image.getHeight(), true));
+        super(() -> "animatica_animated_texture", new NativeImage(image.format(), image.getWidth(), image.getHeight(), true));
 
         this.anims = new Animation[metas.size()];
         for (int i = 0; i < metas.size(); i++) {

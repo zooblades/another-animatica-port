@@ -4,8 +4,8 @@ import io.github.foundationgames.animatica.util.PropertyUtil;
 import io.github.foundationgames.animatica.util.Utilities;
 import io.github.foundationgames.animatica.util.exception.InvalidPropertyException;
 import io.github.foundationgames.animatica.util.exception.PropertyParseException;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.Identifier;
+import net.minecraft.IdentifierException;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,20 +13,20 @@ import java.util.Properties;
 import java.util.Set;
 
 public record AnimationMeta(
-        ResourceLocation source, ResourceLocation target, int targetX,
+        Identifier source, Identifier target, int targetX,
         int targetY, int width, int height, int defaultFrameDuration, boolean interpolate,
         int interpolationDelay, Map<Integer, Integer> frameMapping,
         Map<Integer, Integer> frameDurations
 ) {
-    public static AnimationMeta of(ResourceLocation file, Properties properties) throws PropertyParseException {
-        ResourceLocation source;
-        ResourceLocation target;
+    public static AnimationMeta of(Identifier file, Properties properties) throws PropertyParseException {
+        Identifier source;
+        Identifier target;
         try {
-            source = Utilities.processPath(file, ResourceLocation.parse(PropertyUtil.get(file, properties, "from")));
-        } catch (ResourceLocationException ex) { throw new InvalidPropertyException(file, "from", "resource location"); }
+            source = Utilities.processPath(file, Identifier.parse(PropertyUtil.get(file, properties, "from")));
+        } catch (IdentifierException ex) { throw new InvalidPropertyException(file, "from", "resource location"); }
         try {
-            target = Utilities.processPath(file, ResourceLocation.parse(PropertyUtil.get(file, properties, "to")));
-        } catch (ResourceLocationException ex) { throw new InvalidPropertyException(file, "to", "resource location"); }
+            target = Utilities.processPath(file, Identifier.parse(PropertyUtil.get(file, properties, "to")));
+        } catch (IdentifierException ex) { throw new InvalidPropertyException(file, "to", "resource location"); }
         return new AnimationMeta(
                 source,
                 target,

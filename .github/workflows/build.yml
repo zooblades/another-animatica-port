@@ -36,6 +36,9 @@ jobs:
           PY
           fi
           exit $code
+      - name: dump Minecraft API (for porting)
+        if: always()
+        run: bash .github/dump-api.sh
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:

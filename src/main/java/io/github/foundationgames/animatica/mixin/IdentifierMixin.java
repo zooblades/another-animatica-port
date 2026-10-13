@@ -2,7 +2,7 @@ package io.github.foundationgames.animatica.mixin;
 
 import io.github.foundationgames.animatica.Animatica;
 import io.github.foundationgames.animatica.util.Flags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // Allows invalid characters in paths to support packs with extremely outdated formatting (because OptiFine does too)
-@Mixin(ResourceLocation.class)
+@Mixin(Identifier.class)
 public class IdentifierMixin {
     // Only a warning for resource pack authors, so it must never be able to crash the game (require = 0)
     @Inject(method = "<init>(Ljava/lang/String;Ljava/lang/String;)V", at = @At("TAIL"), require = 0)

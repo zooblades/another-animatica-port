@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableMap;
 import io.github.foundationgames.animatica.util.exception.InvalidPropertyException;
 import io.github.foundationgames.animatica.util.exception.MissingPropertyException;
 import io.github.foundationgames.animatica.util.exception.PropertyParseException;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 import java.util.Properties;
 
 public enum PropertyUtil {;
-    public static String get(ResourceLocation file, Properties properties, String key) throws PropertyParseException {
+    public static String get(Identifier file, Properties properties, String key) throws PropertyParseException {
         var p = properties.getProperty(key);
         if (p == null) {
             throw new MissingPropertyException(file, key);
@@ -30,7 +30,7 @@ public enum PropertyUtil {;
         return p;
     }
 
-    public static int getInt(ResourceLocation file, Properties properties, String key) throws PropertyParseException {
+    public static int getInt(Identifier file, Properties properties, String key) throws PropertyParseException {
         int r;
         try {
             r = Integer.parseInt(get(file, properties, key));
@@ -40,7 +40,7 @@ public enum PropertyUtil {;
         return r;
     }
 
-    public static int getIntOr(ResourceLocation file, Properties properties, String key, int defaultVal) throws PropertyParseException {
+    public static int getIntOr(Identifier file, Properties properties, String key, int defaultVal) throws PropertyParseException {
         var p = properties.getProperty(key);
         if (p == null) {
             return defaultVal;
@@ -54,7 +54,7 @@ public enum PropertyUtil {;
         return r;
     }
 
-    public static boolean getBoolOr(ResourceLocation file, Properties properties, String key, boolean defaultVal) throws PropertyParseException {
+    public static boolean getBoolOr(Identifier file, Properties properties, String key, boolean defaultVal) throws PropertyParseException {
         var p = properties.getProperty(key);
         if (p == null) {
             return defaultVal;
