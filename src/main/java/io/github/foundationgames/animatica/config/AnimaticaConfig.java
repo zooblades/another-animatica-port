@@ -33,7 +33,7 @@ public class AnimaticaConfig {
                     try {
                         this.save();
                     } catch (IOException e) { Animatica.LOG.error("Error saving config while changing in game!", e); }
-                    Minecraft.getInstance().reloadResources();
+                    Minecraft.getInstance().reloadResourcePacks();
                 }
         );
     }
