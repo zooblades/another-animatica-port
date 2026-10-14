@@ -20,7 +20,7 @@ public class Animatica implements ClientModInitializer {
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> AnimationLoader.INSTANCE.tickTextures());
 
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(AnimationLoader.ID, AnimationLoader.INSTANCE);
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(AnimationLoader.ID, AnimationLoader.INSTANCE);
     }
 
     public static Identifier id(String path) {
