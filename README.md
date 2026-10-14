@@ -1,5 +1,5 @@
 # Animatica
-A Minecraft mod (this branch: **Fabric 26.1**) intended to load the MCPatcher/OptiFine [animated texture format](https://github.com/sp614x/optifine/blob/master/OptiFineDoc/doc/custom_animations.txt). <br/>
+A Minecraft mod (this branch: **Fabric 26.2**) intended to load the MCPatcher/OptiFine [animated texture format](https://github.com/sp614x/optifine/blob/master/OptiFineDoc/doc/custom_animations.txt). <br/>
 ## What resource packs does this support?
 Animatica adds support for resource packs that use **custom animated textures** <br/>
 This includes:
