@@ -2,20 +2,17 @@
   "schemaVersion": 1,
   "id": "animatica",
   "version": "${version}",
-
   "name": "Animatica",
   "description": "Allow for animating more game textures using the MCPatcher/OptiFine animation format",
   "authors": [
-    "FoundationGames"
+    "nazarbatrider"
   ],
   "contact": {
     "homepage": "https://github.com/FoundationGames/Animatica",
     "sources": "https://github.com/zooblades/another-animatica-port"
   },
-
   "license": "LGPL-3.0-only",
   "icon": "assets/animatica/icon.png",
-
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -30,5 +27,8 @@
     "fabric-api": "*",
     "minecraft": "~26.3",
     "java": ">=25"
-  }
+  },
+  "contributors": [
+    "FoundationGames (author of the original Animatica mod)"
+  ]
 }
