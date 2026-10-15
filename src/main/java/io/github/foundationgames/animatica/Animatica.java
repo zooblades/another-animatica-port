@@ -8,7 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +25,8 @@ public class Animatica {
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Pre event) -> AnimationLoader.INSTANCE.tickTextures());
     }
 
-    private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(AnimationLoader.INSTANCE);
+    private static void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(AnimationLoader.ID, AnimationLoader.INSTANCE);
     }
 
     public static Identifier id(String path) {

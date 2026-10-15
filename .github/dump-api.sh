@@ -1,7 +1,7 @@
 #!/bin/bash
 # Prints member signatures of classes used by the mod as workflow annotations, so the exact
 # API of a Minecraft/Fabric version can be checked without a local game install.
-CLASSES="${DUMP_CLASSES:-net.fabricmc.fabric.api.resource.v1.ResourceLoader net.minecraft.server.packs.resources.ResourceManagerReloadListener net.minecraft.server.packs.resources.PreparableReloadListener net.minecraft.server.packs.PackType net.minecraft.client.renderer.texture.TextureManager net.minecraft.client.renderer.texture.DynamicTexture com.mojang.blaze3d.platform.NativeImage net.minecraft.client.gui.screens.options.VideoSettingsScreen net.minecraft.resources.Identifier}"
+CLASSES="${DUMP_CLASSES:-net.fabricmc.fabric.api.resource.v1.ResourceLoader net.minecraft.server.packs.resources.ResourceManagerReloadListener net.minecraft.server.packs.resources.PreparableReloadListener net.minecraft.server.packs.PackType net.minecraft.client.renderer.texture.TextureManager net.minecraft.client.renderer.texture.DynamicTexture com.mojang.blaze3d.platform.NativeImage net.minecraft.client.gui.screens.options.VideoSettingsScreen net.minecraft.resources.Identifier net.neoforged.neoforge.client.event.AddClientReloadListenersEvent net.neoforged.neoforge.client.event.ClientTickEvent net.neoforged.neoforge.client.event.ClientTickEvent\$Pre net.neoforged.fml.common.Mod}"
 python3 - $CLASSES <<'PY'
 import sys, os, zipfile, subprocess, glob
 want = {c: c.replace('.', '/') + '.class' for c in sys.argv[1:]}
