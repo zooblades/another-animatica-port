@@ -9,7 +9,8 @@ version = "${mod_version}"
 displayName = "Animatica"
 displayURL = "https://github.com/FoundationGames/Animatica"
 logoFile = "assets/animatica/icon.png"
-authors = "FoundationGames"
+authors = "nazarbatrider"
+credits = "FoundationGames - author of the original Animatica mod"
 description = '''
 Allow for animating more game textures using the MCPatcher/OptiFine animation format.
 NeoForge port of the original Fabric mod by FoundationGames.
