@@ -2,25 +2,31 @@ package io.github.foundationgames.animatica;
 
 import io.github.foundationgames.animatica.animation.AnimationLoader;
 import io.github.foundationgames.animatica.config.AnimaticaConfig;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Animatica implements ClientModInitializer {
+@Mod(value = Animatica.NAMESPACE, dist = Dist.CLIENT)
+public class Animatica {
     public static final Logger LOG = LogManager.getLogger("Animatica");
     public static final String NAMESPACE = "animatica";
 
     public static final AnimaticaConfig CONFIG = new AnimaticaConfig();
 
-    @Override
-    public void onInitializeClient() {
-        ClientTickEvents.START_CLIENT_TICK.register(client -> AnimationLoader.INSTANCE.tickTextures());
+    public Animatica(IEventBus modBus, ModContainer container) {
+        modBus.addListener(Animatica::registerReloadListeners);
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Pre event) -> AnimationLoader.INSTANCE.tickTextures());
+    }
 
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(AnimationLoader.ID, AnimationLoader.INSTANCE);
+    private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(AnimationLoader.INSTANCE);
     }
 
     public static Identifier id(String path) {
